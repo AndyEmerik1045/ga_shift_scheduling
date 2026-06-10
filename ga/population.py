@@ -16,7 +16,7 @@ from config import (
 def buat_kromosom() -> list[list[int]]:
     kromosom = []
     for _ in range(JUMLAH_KARYAWAN):
-        hari_kerja = random.randint(MIN_JAM_KERJA_MGGN, MAKS_JAM_KERJA_MGGN)
+        hari_kerja = random.randint(0, JUMLAH_HARI)
         hari_aktif = set(random.sample(range(JUMLAH_HARI), hari_kerja))
         gen = [
             random.randint(1, 3) if hari in hari_aktif else 0

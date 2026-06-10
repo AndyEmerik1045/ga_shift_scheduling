@@ -40,12 +40,19 @@ def jalankan_ga(verbose: bool = True) -> dict:
     kromosom_terbaik       = None
     generasi_terbaik       = 0
     tidak_ada_perbaikan    = 0
+    history_generasi        = []
     alasan_berhenti        = f"Generasi maks ({GENERASI_MAKS}) tercapai"
 
     for gen in range(GENERASI_MAKS):
         fitness_list = hitung_fitness_populasi(populasi)
         ft = max(fitness_list)
         fr = sum(fitness_list) / len(fitness_list)
+        history_generasi.append({
+            "generasi": gen + 1,
+            "fitness_terbaik": round(ft, 2),
+            "fitness_rata2": round(fr, 2),
+            "fitness_terburuk": round(min(fitness_list), 2),
+        })
         riwayat_terbaik.append(ft)
         riwayat_rata2.append(fr)
 
@@ -115,4 +122,5 @@ def jalankan_ga(verbose: bool = True) -> dict:
         "alasan_berhenti"  : alasan_berhenti,
         "riwayat_terbaik"  : riwayat_terbaik,
         "riwayat_rata2"    : riwayat_rata2,
+        "history_generasi": history_generasi,
     }

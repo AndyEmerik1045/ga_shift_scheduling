@@ -7,6 +7,7 @@ from ga.engine      import jalankan_ga
 from utils.reporter import cetak_jadwal, cetak_rekap_staf, cetak_ringkasan
 from utils.plotter  import plot_konvergensi
 from utils.exporter import simpan_json, simpan_csv
+from utils.export_history import simpan_history_generasi
 
 HASIL_DIR = os.path.join(os.path.dirname(__file__), "results")
 
@@ -34,7 +35,7 @@ def main() -> None:
     }
     simpan_json(kromosom, fitness, os.path.join(HASIL_DIR, "jadwal_terbaik.json"), meta)
     simpan_csv (kromosom, fitness, os.path.join(HASIL_DIR, "jadwal_terbaik.csv"))
-
+    simpan_history_generasi(hasil["history_generasi"], os.path.join(HASIL_DIR, "history_generasi.csv"))
     print("\n  Semua output tersimpan di folder results/\n")
 
 
