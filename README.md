@@ -1,4 +1,5 @@
 # Optimasi Penjadwalan Shift Karyawan Minimarket 24 Jam
+
 ### Implementasi Algoritma Genetika — Python 3.12
 
 > Studi kasus: Penjadwalan shift mingguan 12 karyawan minimarket 24 jam (Indomaret/Alfamart) menggunakan Algoritma Genetika dengan representasi kromosom integer, tournament selection, two-point crossover, dan value-change mutation.
@@ -8,279 +9,327 @@
 ## Daftar Isi
 
 - [Hasil Algoritma](#hasil-algoritma)
-- [Cara Setup (untuk yang clone)](#cara-setup-untuk-yang-clone)
+- [Cara Setup](#cara-setup)
 - [Cara Menjalankan](#cara-menjalankan)
+- [Output Program](#output-program)
 - [Eksperimen Parameter](#eksperimen-parameter)
 - [Cara Kerja Algoritma](#cara-kerja-algoritma)
 - [Kamus File](#kamus-file)
 - [Struktur Folder](#struktur-folder)
+- [Dependensi](#dependensi)
 
 ---
 
-## Hasil Algoritma
+# Hasil Algoritma
 
 | Parameter | Nilai |
-|---|---|
-| Fitness terbaik | 990 / 1000 (99.0%) |
-| Representasi kromosom | Integer — matriks 12×7 |
-| Ukuran populasi | 100 individu |
+|------------|--------|
+| Fitness terbaik | **992 / 1000 (99.2%)** |
+| Representasi kromosom | Integer Matrix (12 × 7) |
+| Ukuran populasi | 100 |
 | Probabilitas crossover (Pc) | 0.8 |
 | Probabilitas mutasi (Pm) | 0.05 |
-| Jumlah generasi maks | 300 |
-| Kriteria terminasi | Kombinasi (konvergensi + threshold + generasi maks) |
+| Generasi maksimum | 300 |
+| Kriteria terminasi | Konvergensi + Threshold + Max Generation |
 
 ---
 
-## Cara Setup (untuk yang clone)
+# Cara Setup
 
-### Prasyarat
-
-- Python 3.10 atau lebih baru
-- Git
-
-Cek versi Python:
-
-```bash
-python --version
-# atau
-python3 --version
-```
-
-### 1 — Clone repositori
+## 1. Clone Repository
 
 ```bash
 git clone https://github.com/AndyEmerik1045/ga_shift_scheduling.git
 cd ga_shift_scheduling
 ```
 
-### 2 — Buat virtual environment (opsional, direkomendasikan)
+## 2. Buat Virtual Environment (Opsional)
+
+### Windows (CMD)
 
 ```bash
-# Buat venv
 python -m venv venv
-
-# Aktifkan — Windows (Command Prompt)
 venv\Scripts\activate
+```
 
-# Aktifkan — Windows (PowerShell)
+### Windows (PowerShell)
+
+```powershell
+python -m venv venv
 .\venv\Scripts\Activate.ps1
+```
 
-# Aktifkan — Mac / Linux
+### Linux / macOS
+
+```bash
+python3 -m venv venv
 source venv/bin/activate
 ```
 
-> Jika menggunakan GitHub Codespaces, lewati langkah ini — tidak perlu venv.
+> Jika menggunakan GitHub Codespaces, langkah ini dapat dilewati.
 
-### 3 — Install dependensi
+---
+
+## 3. Install Dependensi
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Library yang akan terinstal:
+---
 
-| Library | Versi minimal | Kegunaan |
-|---|---|---|
-| numpy | 1.26.0 | Komputasi numerik |
-| matplotlib | 3.8.0 | Grafik konvergensi |
-| tabulate | 0.9.0 | Tabel terminal |
-| pytest | 8.0.0 | Unit testing |
-| pytest-cov | 5.0.0 | Laporan coverage |
-
-### 4 — Buat folder results
+## 4. Verifikasi Python
 
 ```bash
-mkdir results
+python --version
 ```
 
-> Folder ini dibuat otomatis saat program dijalankan. Langkah ini hanya diperlukan jika folder belum ada.
+Output yang direkomendasikan:
+
+```text
+Python 3.10+
+```
 
 ---
 
-## Cara Menjalankan
+# Cara Menjalankan
 
-Pastikan berada di folder root proyek, lalu jalankan:
+Pastikan berada pada root project:
 
 ```bash
 python main.py
 ```
 
-### Contoh output terminal
+---
 
-```
+## Contoh Output Terminal
+
+```text
 ==============================================================
   ALGORITMA GENETIKA — PENJADWALAN SHIFT KARYAWAN
 ==============================================================
-  Populasi : 100   |  Generasi Maks : 300
-  Pc       : 0.8   |  Pm             : 0.05
-  Elitisme : 5 ind |  Tournament k   : 3
+  Populasi : 100    |  Generasi Maks : 300
+  Pc       : 0.8    |  Pm             : 0.05
+  Elitisme : 5 ind  |  Tournament k   : 3
 ==============================================================
-  Gen   1  |  Fitness Terbaik:  968.0  |  Rata-rata:  891.2  |  Tanpa Perbaikan: 0
-  Gen  50  |  Fitness Terbaik:  990.0  |  Rata-rata:  942.7  |  Tanpa Perbaikan: 45
-  ...
-  TERMINASI: Konvergensi (50 gen tanpa perbaikan)
+
+Gen 1
+Fitness Terbaik : 937.0
+Fitness Rata-rata : 873.9
+
+TERMINASI: Threshold fitness 99.0% tercapai
 
 ==============================================================
-  HASIL AKHIR
+HASIL AKHIR
 ==============================================================
-  Fitness Terbaik  : 990.0 / 1000  (99.0%)
-  Ditemukan di     : Generasi 3
-  Total Generasi   : 53
-  Alasan Berhenti  : Konvergensi (50 gen tanpa perbaikan)
-  Waktu Komputasi  : 2.4821 detik
+Fitness Terbaik : 992.0 / 1000 (99.2%)
+Ditemukan pada Generasi : 27
+Total Generasi : 27
+Waktu Komputasi : 0.5011 detik
 ==============================================================
 ```
 
-### Output yang dihasilkan
+---
 
-Setelah selesai, tiga file tersimpan di folder `results/`:
+# Output Program
 
-| File | Format | Isi |
-|---|---|---|
-| `konvergensi_ga.png` | Gambar PNG | Grafik fitness terbaik dan rata-rata per generasi |
-| `jadwal_terbaik.json` | JSON | Data jadwal terstruktur, siap digunakan di API/frontend |
-| `jadwal_terbaik.csv` | CSV | Tabel jadwal, langsung bisa dibuka di Excel/Google Sheets |
+Setelah proses evolusi selesai, folder `results/` akan dibuat otomatis.
+
+```text
+results/
+├── jadwal_terbaik.json
+├── jadwal_terbaik.csv
+└── konvergensi_ga.png
+```
+
+## Deskripsi Output
+
+| File | Format | Keterangan |
+|--------|--------|------------|
+| konvergensi_ga.png | PNG | Grafik fitness terbaik dan rata-rata |
+| jadwal_terbaik.json | JSON | Data jadwal terstruktur |
+| jadwal_terbaik.csv | CSV | Jadwal siap dibuka di Excel / Google Sheets |
 
 ---
 
-## Eksperimen Parameter
+# Eksperimen Parameter
 
-Untuk keperluan pengujian laporan, ubah nilai di `config.py` lalu jalankan ulang `python main.py`. Ubah **satu parameter per eksperimen** agar hasil bisa dibandingkan.
+Seluruh parameter GA dapat diubah melalui file:
 
 ```python
-# config.py — parameter yang bisa diubah untuk eksperimen
+# config.py
 
-UKURAN_POPULASI = 100   # coba: 50, 100, 150, 200
-GENERASI_MAKS   = 300   # coba: 100, 200, 300, 500
-PROB_CROSSOVER  = 0.8   # coba: 0.6, 0.7, 0.8, 0.9
-PROB_MUTASI     = 0.05  # coba: 0.01, 0.05, 0.10
+UKURAN_POPULASI = 100
+GENERASI_MAKS = 300
+PROB_CROSSOVER = 0.8
+PROB_MUTASI = 0.05
 ```
 
-### Tabel pengujian (template)
+Contoh variasi pengujian:
 
-| Populasi | Pc | Pm | Generasi | Fitness Terbaik | Waktu (detik) | Alasan Berhenti |
-|---|---|---|---|---|---|---|
-| 50 | 0.8 | 0.05 | - | - | - | - |
-| 100 | 0.8 | 0.05 | - | - | - | - |
-| 150 | 0.8 | 0.05 | - | - | - | - |
-| 200 | 0.8 | 0.05 | - | - | - | - |
-| 100 | 0.6 | 0.05 | - | - | - | - |
-| 100 | 0.7 | 0.05 | - | - | - | - |
-| 100 | 0.9 | 0.05 | - | - | - | - |
-| 100 | 0.8 | 0.01 | - | - | - | - |
-| 100 | 0.8 | 0.10 | - | - | - | - |
+| Parameter | Nilai Uji |
+|------------|------------|
+| Populasi | 50, 100, 150, 200 |
+| Generasi | 100, 200, 300, 500 |
+| Pc | 0.6, 0.7, 0.8, 0.9 |
+| Pm | 0.01, 0.05, 0.10 |
 
 ---
 
-## Cara Kerja Algoritma
+## Template Hasil Pengujian
 
-### Representasi Kromosom
+| Populasi | Pc | Pm | Generasi | Fitness | Waktu |
+|-----------|----|----|----------|----------|--------|
+| 50 | 0.8 | 0.05 | - | - | - |
+| 100 | 0.8 | 0.05 | 27 | 992 | 0.5011 |
+| 150 | 0.8 | 0.05 | - | - | - |
+| 200 | 0.8 | 0.05 | - | - | - |
 
-Satu kromosom merepresentasikan satu skenario jadwal kerja seluruh karyawan selama 7 hari. Kromosom berupa matriks integer berukuran **12 × 7**, di mana setiap elemen merupakan kode shift:
+---
 
+# Cara Kerja Algoritma
+
+## Representasi Kromosom
+
+Satu kromosom mewakili satu jadwal kerja selama 7 hari untuk 12 karyawan.
+
+Ukuran kromosom:
+
+```text
+12 x 7
 ```
-         Senin  Selasa  Rabu  Kamis  Jumat  Sabtu  Minggu
-Kar. 01 [  2,     0,     1,    0,     0,     3,     2  ]
-Kar. 02 [  1,     0,     1,    1,     0,     3,     0  ]
+
+Contoh:
+
+```text
+        Sen Sel Rab Kam Jum Sab Min
+Kar01   2   0   1   0   0   3   2
+Kar02   1   0   1   1   0   3   0
 ...
-Kar. 12 [  1,     1,     0,    0,     3,     0,     1  ]
-
-Kode: 0 = Libur | 1 = Pagi (06-14) | 2 = Siang (14-22) | 3 = Malam (22-06)
+Kar12   1   1   0   0   3   0   1
 ```
 
-### Fungsi Fitness
+Keterangan:
 
-Fitness dihitung dengan pendekatan berbasis penalti:
-
-```
-f(x) = 1000 - Σ(wᵢ × pᵢ)
-```
-
-| Constraint | Tipe | Bobot (w) | Penalti jika... |
-|---|---|---|---|
-| Minimum 2 staf per shift per hari | Hard | 10 | Kurang dari 2 staf di satu shift |
-| Maks 6 hari kerja per minggu | Hard | 15 | Karyawan bekerja lebih dari 6 hari |
-| Min 3 hari kerja per minggu | Hard | 8 | Karyawan bekerja kurang dari 3 hari |
-| Distribusi shift merata | Soft | 3 | Selisih jumlah shift antar tipe terlalu besar |
-| Preferensi shift karyawan | Soft | 2 | Shift preferensi tidak terpenuhi sama sekali |
-
-### Alur Evolusi (per generasi)
-
-```
-Inisialisasi 100 kromosom acak
-        ↓
-Evaluasi fitness seluruh populasi
-        ↓
-Simpan 5 elite terbaik (elitisme 5%)
-        ↓
-Tournament selection (k=3) → pilih orang tua
-        ↓
-Two-point crossover (Pc = 0.8) → anak baru
-        ↓
-Value-change mutation (Pm = 0.05) → variasi
-        ↓
-Cek terminasi ──→ [Ya] → output jadwal terbaik
-        ↓ [Tidak]
-Kembali ke evaluasi fitness
-```
-
-### Kriteria Terminasi (kombinasi)
-
-Algoritma berhenti jika **salah satu** kondisi terpenuhi:
-
-1. Jumlah generasi mencapai **300**
-2. Tidak ada peningkatan fitness selama **50 generasi** berturut-turut (konvergensi)
-3. Fitness terbaik mencapai **99%** dari nilai maksimum (threshold)
+| Kode | Shift |
+|--------|--------|
+| 0 | Libur |
+| 1 | Pagi (06.00–14.00) |
+| 2 | Siang (14.00–22.00) |
+| 3 | Malam (22.00–06.00) |
 
 ---
 
-## Kamus File
+## Fungsi Fitness
 
-| File | Fungsi | Deskripsi |
-|---|---|---|
-| `config.py` | Pusat konfigurasi GA | Menyimpan semua konstanta dan parameter algoritma. Ubah nilai di sini untuk eksperimen tanpa menyentuh logika GA. |
-| `main.py` | Entry point utama | Mengintegrasikan seluruh modul — menjalankan GA, mencetak hasil ke terminal, menyimpan grafik dan file output. |
-| `requirements.txt` | Daftar dependensi | Daftar library Python yang dibutuhkan beserta versi minimalnya. |
-| `ga/__init__.py` | Penanda package | File kosong yang menandai folder `ga/` sebagai Python package agar bisa diimport. |
-| `ga/population.py` | Inisialisasi populasi | Membuat 100 kromosom acak berukuran 12×7. Setiap karyawan mendapat 3–6 hari kerja dengan shift dipilih secara acak. |
-| `ga/fitness.py` | Evaluasi kromosom | Menghitung nilai fitness setiap kromosom menggunakan fungsi penalti berdasarkan 3 hard constraint dan 2 soft constraint. |
-| `ga/selection.py` | Seleksi orang tua | Mengimplementasikan tournament selection (k=3) untuk memilih orang tua dan elitisme 5% untuk mempertahankan individu terbaik. |
-| `ga/crossover.py` | Rekombinasi genetik | Melakukan two-point crossover antar dua kromosom orang tua dengan probabilitas Pc=0.8 untuk menghasilkan dua kromosom anak. |
-| `ga/mutation.py` | Mutasi gen | Menerapkan value-change mutation pada setiap gen dengan probabilitas Pm=0.05, mengganti nilai shift dengan nilai acak yang valid. |
-| `ga/engine.py` | Mesin utama GA | Mengintegrasikan semua operator dan menjalankan loop evolusi hingga kriteria terminasi terpenuhi. Mengembalikan hasil lengkap sebagai dictionary. |
-| `utils/__init__.py` | Penanda package | File kosong yang menandai folder `utils/` sebagai Python package. |
-| `utils/reporter.py` | Tampilan terminal | Mencetak tabel jadwal shift, rekap jumlah staf per shift per hari, dan ringkasan statistik eksekusi GA ke terminal. |
-| `utils/plotter.py` | Grafik konvergensi | Membuat dan menyimpan grafik perbandingan fitness terbaik dan rata-rata per generasi sebagai file PNG menggunakan Matplotlib. |
-| `utils/exporter.py` | Ekspor hasil | Menyimpan jadwal terbaik ke dalam dua format: JSON (terstruktur, siap API) dan CSV (tabel, siap Excel). |
+Fitness dihitung menggunakan pendekatan penalti:
+
+```math
+f(x) = 1000 - \sum (w_i \times p_i)
+```
+
+### Hard Constraint
+
+| Constraint | Bobot |
+|------------|--------|
+| Minimal 2 staf per shift | 10 |
+| Maksimal 6 hari kerja | 15 |
+| Minimal 3 hari kerja | 8 |
+
+### Soft Constraint
+
+| Constraint | Bobot |
+|------------|--------|
+| Distribusi shift merata | 3 |
+| Preferensi shift terpenuhi | 2 |
 
 ---
 
-## Struktur Folder
+## Alur Evolusi
 
+```text
+Inisialisasi Populasi
+        ↓
+Evaluasi Fitness
+        ↓
+Elitisme (Top 5%)
+        ↓
+Tournament Selection
+        ↓
+Two-Point Crossover
+        ↓
+Mutation
+        ↓
+Evaluasi Fitness Baru
+        ↓
+Cek Terminasi
 ```
+
+---
+
+## Kriteria Terminasi
+
+Algoritma berhenti apabila salah satu kondisi berikut terpenuhi:
+
+1. Generasi mencapai 300.
+2. Tidak ada peningkatan fitness selama 50 generasi.
+3. Fitness mencapai 99% dari nilai maksimum.
+
+Pada eksperimen ini:
+
+```text
+Fitness = 992 / 1000 = 99.2%
+```
+
+Sehingga terminasi terjadi pada generasi ke-27.
+
+---
+
+# Kamus File
+
+| File | Fungsi |
+|--------|--------|
+| config.py | Konfigurasi parameter GA |
+| main.py | Entry point aplikasi |
+| requirements.txt | Daftar dependensi |
+| ga/population.py | Inisialisasi populasi |
+| ga/fitness.py | Evaluasi fitness |
+| ga/selection.py | Tournament selection & elitisme |
+| ga/crossover.py | Two-point crossover |
+| ga/mutation.py | Value-change mutation |
+| ga/engine.py | Mesin utama algoritma |
+| utils/reporter.py | Output terminal |
+| utils/plotter.py | Grafik konvergensi |
+| utils/exporter.py | Ekspor JSON & CSV |
+
+---
+
+# Struktur Folder
+
+```text
 ga_shift_scheduling/
 │
-├── config.py              ← parameter GA, ubah di sini untuk eksperimen
-├── main.py                ← entry point, jalankan: python main.py
-├── requirements.txt       ← pip install -r requirements.txt
+├── config.py
+├── main.py
+├── requirements.txt
 ├── .gitignore
 │
-├── ga/                    ← logika inti algoritma genetika
+├── ga/
 │   ├── __init__.py
-│   ├── population.py      ← inisialisasi 100 kromosom acak (12×7)
-│   ├── fitness.py         ← f(x) = 1000 − Σpenalti
-│   ├── selection.py       ← tournament k=3 + elitisme 5%
-│   ├── crossover.py       ← two-point crossover (Pc=0.8)
-│   ├── mutation.py        ← value-change mutation (Pm=0.05)
-│   └── engine.py          ← loop evolusi + kriteria terminasi
+│   ├── population.py
+│   ├── fitness.py
+│   ├── selection.py
+│   ├── crossover.py
+│   ├── mutation.py
+│   └── engine.py
 │
-├── utils/                 ← output, visualisasi, ekspor
+├── utils/
 │   ├── __init__.py
-│   ├── reporter.py        ← tabel jadwal di terminal
-│   ├── plotter.py         ← grafik konvergensi PNG
-│   └── exporter.py        ← ekspor JSON dan CSV
+│   ├── reporter.py
+│   ├── plotter.py
+│   └── exporter.py
 │
-└── results/               ← output program (auto-dibuat saat run)
+└── results/
     ├── jadwal_terbaik.json
     ├── jadwal_terbaik.csv
     └── konvergensi_ga.png
@@ -288,9 +337,9 @@ ga_shift_scheduling/
 
 ---
 
-## Dependensi
+# Dependensi
 
-```
+```text
 numpy>=1.26.0
 matplotlib>=3.8.0
 tabulate>=0.9.0
@@ -298,6 +347,30 @@ pytest>=8.0.0
 pytest-cov>=5.0.0
 ```
 
+Install seluruh dependensi dengan:
+
+```bash
+pip install -r requirements.txt
+```
+
 ---
 
-*Dibuat untuk keperluan tugas implementasi Algoritma Genetika — Optimasi Penjadwalan Shift Karyawan Minimarket 24 Jam.*
+# Tentang Proyek
+
+Proyek ini dibuat untuk memenuhi tugas implementasi **Algoritma Genetika (Genetic Algorithm)** pada kasus optimasi penjadwalan shift karyawan minimarket 24 jam.
+
+Metode yang digunakan:
+
+- Tournament Selection
+- Elitism
+- Two-Point Crossover
+- Value-Change Mutation
+- Fitness Penalty Function
+
+Dengan konfigurasi terbaik yang diuji, algoritma berhasil memperoleh:
+
+```text
+Fitness = 992 / 1000 (99.2%)
+```
+
+dalam **27 generasi** dengan waktu komputasi sekitar **0.5 detik**.

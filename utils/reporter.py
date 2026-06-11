@@ -30,6 +30,29 @@ def cetak_jadwal(kromosom: list[list[int]], fitness: float) -> None:
     print(tabulate(rows, headers=header, tablefmt="grid"))
     print(f"\n  Fitness: {fitness:.1f} / 1000  ({(fitness / 1000) * 100:.1f}%)")
 
+def cetak_durasi_kerja(kromosom: list[list[int]]) -> None:
+    jam_per_hari  = 8
+    min_total_jam = 16
+    print("\n" + "=" * 74)
+    print(f"  DURASI KERJA AKTUAL MINGGUAN KARYAWAN ({jam_per_hari} JAM / HARI MASUK)")
+    print("=" * 74)
+    rows = []
+    for k in range(JUMLAH_KARYAWAN):
+        id_karyawan = f"K-{k+1:02d}"
+        hari_kerja  = sum(1 for hari in range(JUMLAH_HARI) if kromosom[k][hari] != 0)
+        total_jam   = hari_kerja * jam_per_hari
+        status      = "OK" if total_jam >= min_total_jam else "KURANG"
+        rows.append([
+            id_karyawan,
+            NAMA_KARYAWAN[k],
+            f"{hari_kerja} Hari",
+            f"{total_jam} Jam ({status})",
+        ])
+    print(tabulate(
+        rows,
+        headers=["ID Karyawan", "Nama Karyawan", "Hari Kerja", "Total Jam Kerja Status"],
+        tablefmt="grid",
+    ))
 
 def cetak_rekap_staf(kromosom: list[list[int]]) -> None:
     print("\n" + "=" * 74)
