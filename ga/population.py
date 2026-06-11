@@ -13,7 +13,7 @@ from config import (
 )
 
 
-# ── ID karyawan tetap (ditambahkan sesuai permintaan dosen) ───
+# ── ID karyawan ───
 ID_KARYAWAN = [f"K{i+1:02d}" for i in range(JUMLAH_KARYAWAN)]
 # Hasil: ["K01", "K02", ..., "K12"]
 
