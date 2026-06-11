@@ -38,7 +38,7 @@ def cetak_durasi_kerja(kromosom: list[list[int]]) -> None:
     print("=" * 74)
     rows = []
     for k in range(JUMLAH_KARYAWAN):
-        id_karyawan = f"EMP-{k+1:02d}"
+        id_karyawan = f"K-{k+1:02d}"
         hari_kerja  = sum(1 for hari in range(JUMLAH_HARI) if kromosom[k][hari] != 0)
         total_jam   = hari_kerja * jam_per_hari
         status      = "OK" if total_jam >= min_total_jam else "KURANG"
