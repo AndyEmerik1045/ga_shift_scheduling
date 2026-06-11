@@ -51,13 +51,6 @@ def hitung_fitness(kromosom: list[list[int]]) -> float:
         if hari_kerja < MIN_HARI_KERJA_MGGN:                        
             penalti += W_MIN_JAM * (MIN_HARI_KERJA_MGGN - hari_kerja)    
 
-    # ── Soft Constraint Baru ──────────────────────────────────
-    # Pemerataan beban kerja antar karyawan 
-    rata = sum(hari_kerja_semua) / JUMLAH_KARYAWAN
-
-    for hk in hari_kerja_semua:
-        penalti += W_DISTRIBUSI * abs(hk - rata)  
-
     # ── Soft Constraint 1 ─────────────────────────────────────
     # Distribusi shift merata (w=3)
     total_shift = [0, 0, 0]
