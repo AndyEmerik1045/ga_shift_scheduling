@@ -24,7 +24,6 @@ def buat_kromosom() -> list[list[int]]:
         # HC2 & HC3: jumlah hari kerja antara MIN (3) dan MAKS (6)
         jumlah_hari_kerja = random.randint(MIN_HARI_KERJA_MGGN, MAKS_HARI_KERJA_MGGN)
 
-        # Pilih hari kerja secara acak tanpa pengulangan
         hari_aktif = set(random.sample(range(JUMLAH_HARI), jumlah_hari_kerja))
 
         # Bentuk gen: shift acak untuk hari kerja, 0 untuk hari libur

@@ -23,7 +23,7 @@ F_MAX = 1000
 def hitung_fitness(kromosom: list[list[int]]) -> float:
     penalti = 0.0
 
-    # ── Hard Constraint 1 ─────────────────────────────────────
+    # ── Hard Constraint 1 ──
     # Min 2 staf per shift per hari (w=10)
     for hari in range(JUMLAH_HARI):
         for shift in (1, 2, 3):
@@ -34,7 +34,7 @@ def hitung_fitness(kromosom: list[list[int]]) -> float:
             if jumlah < MIN_STAF_PER_SHIFT:
                 penalti += W_MIN_STAF * (MIN_STAF_PER_SHIFT - jumlah)
 
-    # ── Hard Constraint 2 & 3 ─────────────────────────────────
+    # ── Hard Constraint 2 & 3 ───
     # Maks 6 hari kerja (w=15) dan Min 3 hari kerja (w=8)
     hari_kerja_semua = []
 
@@ -51,14 +51,14 @@ def hitung_fitness(kromosom: list[list[int]]) -> float:
         if hari_kerja < MIN_HARI_KERJA_MGGN:                        
             penalti += W_MIN_JAM * (MIN_HARI_KERJA_MGGN - hari_kerja)    
 
-    # ── Soft Constraint Baru ──────────────────────────────────
+    # ── Soft Constraint Baru ───
     # Pemerataan beban kerja antar karyawan 
     rata = sum(hari_kerja_semua) / JUMLAH_KARYAWAN
 
     for hk in hari_kerja_semua:
         penalti += W_DISTRIBUSI * abs(hk - rata)  
 
-    # ── Soft Constraint 1 ─────────────────────────────────────
+    # ── Soft Constraint 1 ───
     # Distribusi shift merata (w=3)
     total_shift = [0, 0, 0]
 
@@ -73,7 +73,7 @@ def hitung_fitness(kromosom: list[list[int]]) -> float:
     for ts in total_shift:
         penalti += W_DISTRIBUSI * abs(ts - rata2)
 
-    # ── Soft Constraint 2 ─────────────────────────────────────
+    # ── Soft Constraint 2 ───
     # Preferensi shift karyawan (w=2)
     for k in range(JUMLAH_KARYAWAN):
         pref = PREFERENSI_KARYAWAN[k]
