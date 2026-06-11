@@ -32,30 +32,36 @@ def jalankan_ga(verbose: bool = True) -> dict:
         print(f"  Elitisme : {JUMLAH_ELITE} ind    |  Tournament k   : {TOURNAMENT_K}")
         print("=" * 62)
 
+    # ── Inisialisasi ──────────────────────────────────────────────────────
     waktu_mulai            = time.time()
     populasi               = inisialisasi_populasi()
     riwayat_terbaik        = []
     riwayat_rata2          = []
+    history_generasi       = []
     fitness_terbaik_global = -1.0
     kromosom_terbaik       = None
     generasi_terbaik       = 0
     tidak_ada_perbaikan    = 0
-    history_generasi        = []
     alasan_berhenti        = f"Generasi maks ({GENERASI_MAKS}) tercapai"
 
+    # ── Loop Evolusi ──────────────────────────────────────────────────────
     for gen in range(GENERASI_MAKS):
+
+        # Langkah 1 — Evaluasi fitness seluruh individu
         fitness_list = hitung_fitness_populasi(populasi)
         ft = max(fitness_list)
         fr = sum(fitness_list) / len(fitness_list)
-        history_generasi.append({
-            "generasi": gen + 1,
-            "fitness_terbaik": round(ft, 2),
-            "fitness_rata2": round(fr, 2),
-            "fitness_terburuk": round(min(fitness_list), 2),
-        })
+
         riwayat_terbaik.append(ft)
         riwayat_rata2.append(fr)
+        history_generasi.append({
+            "generasi"        : gen + 1,
+            "fitness_terbaik" : round(ft, 2),
+            "fitness_rata2"   : round(fr, 2),
+            "fitness_terburuk": round(min(fitness_list), 2),
+        })
 
+        # Langkah 2 — Perbarui solusi terbaik global (elitisme global)
         idx_terbaik = fitness_list.index(ft)
         if ft > fitness_terbaik_global:
             fitness_terbaik_global = ft
@@ -73,31 +79,53 @@ def jalankan_ga(verbose: bool = True) -> dict:
                 f"Tanpa Perbaikan: {tidak_ada_perbaikan}"
             )
 
+        # ── Langkah 3 — Pengecekan Kriteria Terminasi ────────────────────
+
+        # Kriteria 2: Konvergensi — tidak ada peningkatan selama
+        # KONVERGENSI_GEN (50) generasi berturut-turut
         if tidak_ada_perbaikan >= KONVERGENSI_GEN:
-            alasan_berhenti = f"Konvergensi ({tidak_ada_perbaikan} gen tanpa perbaikan)"
+            alasan_berhenti = (
+                f"Konvergensi ({tidak_ada_perbaikan} gen tanpa perbaikan)"
+            )
             if verbose:
                 print(f"\n  TERMINASI: {alasan_berhenti}")
             break
 
-        if (fitness_terbaik_global / 1000) * 100 >= THRESHOLD_FITNESS:
-            alasan_berhenti = f"Threshold fitness {THRESHOLD_FITNESS}% tercapai"
+        # Kriteria 3: Threshold — fitness terbaik ≥ THRESHOLD_FITNESS %
+        # dari nilai maksimum (misal 99.0% dari 1000 = 990)
+        if (fitness_terbaik_global / 1000.0) * 100.0 >= THRESHOLD_FITNESS:
+            alasan_berhenti = (
+                f"Threshold fitness {THRESHOLD_FITNESS}% tercapai"
+            )
             if verbose:
                 print(f"\n  TERMINASI: {alasan_berhenti}")
             break
 
+        # Kriteria 1 akan terpenuhi secara otomatis saat loop habis (gen == GENERASI_MAKS-1)
+
+        # ── Langkah 4-7 — Bentuk Populasi Baru ───────────────────────────
+
+        # Pertahankan JUMLAH_ELITE individu terbaik tanpa modifikasi
         elite         = ambil_elite(populasi, fitness_list)
         populasi_baru = elite[:]
 
+        # Isi sisa populasi dengan offspring hasil seleksi-crossover-mutasi
         while len(populasi_baru) < UKURAN_POPULASI:
+            # Langkah 4 — Tournament Selection untuk dua induk
             p1 = tournament_selection(populasi, fitness_list)
             p2 = tournament_selection(populasi, fitness_list)
+
+            # Langkah 5 — Two-Point Crossover (Pc = 0.8)
             c1, c2 = two_point_crossover(p1, p2)
+
+            # Langkah 6 — Value Change Mutation (Pm = 0.05)
             populasi_baru.append(mutasi(c1))
             if len(populasi_baru) < UKURAN_POPULASI:
                 populasi_baru.append(mutasi(c2))
 
         populasi = populasi_baru
 
+    # ── Ringkasan Hasil ───────────────────────────────────────────────────
     waktu_komputasi = time.time() - waktu_mulai
     total_gen       = len(riwayat_terbaik)
 
@@ -105,8 +133,10 @@ def jalankan_ga(verbose: bool = True) -> dict:
         print(f"\n{'='*62}")
         print(f"  HASIL AKHIR")
         print(f"{'='*62}")
-        print(f"  Fitness Terbaik  : {fitness_terbaik_global} / 1000"
-              f"  ({(fitness_terbaik_global / 1000) * 100:.1f}%)")
+        print(
+            f"  Fitness Terbaik  : {fitness_terbaik_global} / 1000"
+            f"  ({(fitness_terbaik_global / 1000) * 100:.1f}%)"
+        )
         print(f"  Ditemukan di     : Generasi {generasi_terbaik}")
         print(f"  Total Generasi   : {total_gen}")
         print(f"  Alasan Berhenti  : {alasan_berhenti}")
@@ -122,5 +152,5 @@ def jalankan_ga(verbose: bool = True) -> dict:
         "alasan_berhenti"  : alasan_berhenti,
         "riwayat_terbaik"  : riwayat_terbaik,
         "riwayat_rata2"    : riwayat_rata2,
-        "history_generasi": history_generasi,
+        "history_generasi" : history_generasi,
     }
